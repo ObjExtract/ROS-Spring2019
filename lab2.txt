@@ -17,7 +17,7 @@ Test the connection to an active node by calling `rosnode ping [node]`
 
 View the active topics by running `rostopic list`
 
-Display the publishing rates of the two broadcasters by calling `rostopic hz` 
+Display the publishing rates of a topic of either turtle by calling `rostopic hz [topic]`
 Compare to the average rates shown in the rqt_tf_tree. Which are greater? Why?
 
 Continue working through the tf Tutorials and finish with the tf and Time tutorials
