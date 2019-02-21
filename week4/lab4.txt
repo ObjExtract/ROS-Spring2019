@@ -1,0 +1,17 @@
+Lab4: It's Alive!
+In this Lab we will build a simple bipedal robot that can move with constraints
+
+1. Setting up the lab4 package
+
+Navigate to the catkin_ws/src directory
+
+Use the catkin_create_pkg command to create a package called its_alive that depends on roslaunch and rviz
+
+Open its_alive/package.xml
+Delete the <build_depend> lines for xacro and rviz. TODO why
+Delete all <build_export_depend> lines. TODO why
+Save and close package.xml
+
+Run `mkdir src launch rviz urdf` to create the src and launch directories in its_alive
+
+

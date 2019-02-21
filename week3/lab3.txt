@@ -1,0 +1,15 @@
+Lab 3: Universal Robot Description Format
+
+Open Firefox
+
+Navigate to http://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20Scratch
+
+
+Open Terminal
+
+run `roscd urdf_tutorial` to navigate to the urdf_tutorial package
+
+Follow these tutorials from the webpage above:
+'Building a Visual Robot Model with URDF from Scratch'
+'Building a Movable Robot Model with URDF'
+'Adding Physical and Collision Properties to a URDF Model'
