@@ -1,0 +1,144 @@
+-------------- Part 1 --------------
+In this part we will use RViz to visualize the robot's motion as we try out various Twist commands and motion control scripts in a simulated environment
+
+1. Simple Motion Control on Command Line
+
+First, start up the fake turtlebot:
+$ roslaunch rb1_bringup fake_turtlebot.launch
+
+Open a new terminal and open up rviz:
+$ rosrun rviz rviz -d `rospack find rbx1_nav`/sim.rviz
+
+Finally, open another terminal and practice publishing twist messages to the /cmd_vel topic:
+$ rostopic pub -r 10 /cmd_vel geometry_msgs/Twist '{linear: {x: 0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: -0.5}}'
+
+Note that passing the -r parameter causes the message to be published at 10 hz indefinitely. Use CTRL-C or publish an twist message with '{}' to stop motion.
+
+Note in RViz that the Keep field is set to 100 for the Odometry Display which indicates that we want to display up to the last 100 arrows before the oldest one is removed. The Position Tolerance (in meters) and Angle Tolerance (in radians) allow you to control how often a new arrow will be displayed.
+
+Experiment with publishing other values for linear x and angular z in the twist message and observe the behavior of the robot in RViz. 
+
+CTRL-C in all terminals before moving on.
+
+2. Motion Control in a ROS node
+Now let's try to to use timed Twist commands to move the robot forward a certain distance, rotate 180 degrees, then move forward again for the same time and at the same speed so that it will hopefully end up where it started.
+
+Open timed_out_and_back.py in the rbx1_nav (Ros-by-Example vol. 1: Navigation) package: 
+$ rosed rbx1_nav timed_out_and_back.py
+
+Let's walk through this.
+
+-------------------------
+1 #!/usr/bin/env python
+2
+3 import rospy
+-------------------------
+
+You'll already know that all of our ROS nodes begin with these two lines. The first line ensures that the program will run as a Python script while the second imports the main ROS library for Python.
+
+-------------------------
+4 from geometry_msgs.msg import Twist
+5 from math import pi
+-------------------------
+
+Here we import the Twist message type from the ROS geometry_msgs package and the constant pi from the Python math module.
+
+-------------------------
+7 class OutAndBack():
+8 	def __init__(self):
+-------------------------
+
+Here we begin the main body of our ROS node by defining it as a Python class along with the standard class initialization line.
+
+-------------------------
+9 	# Give the node a name
+10 	rospy.init_node('out_and_back', anonymous=False)
+11
+12 	# Set rospy to execute a shutdown function when exiting
+13 	rospy.on_shutdown(self.shutdown)
+-------------------------
+
+Every ROS node requires a call to rospy.init_node() and we also set a callback for the on_shutdown() function so that we can perform any necessary cleanup when the script is terminated — e.g. when the user hits Ctrl-C. In the case of a mobile robot, the most important cleanup task is to stop the robot. We'll see how to do this later in the script.
+
+-------------------------
+15 	# Publisher to control the robot's speed
+16 	self.cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
+17
+18 	# How fast will we update the robot's movement?
+19 	rate = 50
+20
+21 	# Set the equivalent ROS rate variable
+22 	r = rospy.Rate(rate)
+-------------------------
+
+Here we define our ROS publisher for sending Twist commands to the /cmd_vel topic. We also set the rate at which we want to update the robot's movement, 50 times per second in this case, and the queue_size parameter to 5.
+
+You can learn more about the queue_size parameter on the ROS Wiki. The most important fact to keep in mind is that if this parameter is omitted or set to None, the publisher will behave synchronously. This means that if there are multiple subscribers to the publisher's topic and one of the subscribers gets hung up—for example, it sits at the other end of a flaky wireless connection—then publishing will block on all subscribers to that topic until the hung subscriber comes back to life. This is generally not a desirable outcome. Setting the queue_size parameter to a numeric value causes the publisher to behave asynchronously so that each subscriber receives messages on a separate thread an no one subscriber and lock up the whole system.
+
+-------------------------
+24 	# Set the forward linear speed to 0.2 meters per second
+25 	linear_speed = 0.2
+26
+27 	# Set the travel distance to 1.0 meters
+28 	goal_distance = 1.0
+29
+30 	# How long should it take us to get there?
+31 	linear_duration = linear_distance / linear_speed
+-------------------------
+
+We initialize the forward speed to a relatively safe 0.2 meters per second and the target distance to 1.0 meters. We then compute how long this should take.
+
+-------------------------
+33 	# Set the rotation speed to 1.0 radians per second
+34 	angular_speed = 1.0
+35
+36 	# Set the rotation angle to Pi radians (180 degrees)
+37 	goal_angle = pi
+38
+39 	# How long should it take to rotate?
+40 	angular_duration = angular_distance / angular_speed
+-------------------------
+
+Similarly, we set the rotation speed to 1.0 radians per second and the target angle to 180 degrees or Pi radians.
+
+-------------------------
+42 	# Loop through the two legs of the trip
+43 	for i in range(2):
+44 		# Initialize the movement command
+45 		move_cmd = Twist()
+46
+47 		# Set the forward speed
+48 		move_cmd.linear.x = linear_speed
+49
+50 		# Move forward for a time to go the desired distance
+51 		ticks = int(linear_duration * rate)
+52
+53 		for t in range(ticks):
+54 			self.cmd_vel.publish(move_cmd)
+55 			r.sleep()
+-------------------------
+
+This is the loop that actually moves the robot—one cycle for each of the two legs. Some robots require a Twist message to be continually published to keep it moving. So to move the robot forward linear_distance meters at a speed of linear_speed meters per second, we publish the move_cmd message every 1/rate seconds for the appropriate duration. The expression r.sleep() is a shorthand for rospy.sleep(1/rate) since we defined the variable r = rospy.Rate(rate).
+
+-------------------------
+62 	# Now rotate left roughly 180 degrees
+63
+64 	# Set the angular speed
+65 	move_cmd.angular.z = angular_speed
+66
+67 	# Rotate for a time to go 180 degrees
+68 	ticks = int(goal_angle * rate)
+69
+70 	for t in range(ticks):
+71 		self.cmd_vel.publish(move_cmd)
+72 		r.sleep()
+-------------------------
+
+In the second part of the loop, we rotate the robot at a rate of angular_speed radians per second for the appropriate duration (Pi seconds in this case) which should yield 180 degrees.
+
+
+
+
+
+
+
