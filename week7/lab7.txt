@@ -1,7 +1,7 @@
 Lab 7: Mapping
 
 ------------ PART 1 ------------
-In this lab you will practice mapping the STEM room with turtlebots.
+In this part of the lab you will practice mapping the STEM room with turtlebots.
 
 1. In a new terminal:
 
@@ -44,4 +44,16 @@ This launches the keyboard teleoperation package which allows us to control the 
 
 Observe the map being built in rviz as you drive the turtlebot. How does the speed of the turtlebot affect the accuracy of the map? 
 
+Try to have as little grey space (unseen area) on you map as possible, we will use these maps next week.
 
+6. When your map is finished open a new terminal
+
+$ connect
+
+$ rosrun map_server map_saver -f ~/catkin_ws/rbx1_nav/maps/<your name>_STEM
+
+This will save your map file in a .yaml file and the corresponding image in a .png file in the rbx1_nav package
+
+$ ls ~/catkin_ws/rbx1_nav/maps
+
+You should be able to see your maps here.

@@ -14,4 +14,5 @@ Save and close package.xml
 
 Run `mkdir src launch rviz urdf` to create the src and launch directories in its_alive
 
-
+Navigate into the urdf folder
+Create 
