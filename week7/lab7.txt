@@ -1,0 +1,47 @@
+Lab 7: Mapping
+
+------------ PART 1 ------------
+In this lab you will practice mapping the STEM room with turtlebots.
+
+1. In a new terminal:
+
+$ connect
+
+'connect' is just an alias for 'ssh turtlebot@<hostname>.local' that we put in the ~/.bashrc file for convenience, now you don't have to enter a password every time or type everything out.
+
+
+$ roslaunch turtlebot_bringup minimal.launch
+
+You've seen this before, this launches roscore and other nodes like mobile_base and cmd_vel_mux that are the minimum necessary for the turtlebot to function.
+
+2. Open another terminal:
+
+$ connect
+
+$ roslaunch turtlebot_navigation gmapping_demo.launch
+
+This launches the gmapping nodes which work together to build a map using the camera and odometry data. There are nodes to convert the depth image from the camera into a laserscan, to smooth the velocity readings, and to build the map.
+
+3. Open another terminal:
+
+$ source ~/catkin_ws/devel/setup.bash
+
+In ROS there are two places packages are stored. Most packages are stored in /opt/ros/kinetic/share but some third-party packages you download and those that you create are placed in the /catkin_ws/src directory. Running the command above tells ROS where to find those packages. 
+
+$ rosrun rviz rviz -d `rospack find rbx1_nav`/gmapping.rviz
+
+Here we are using rosrun to start the rviz node (second argument) in the rviz package (first argument) and passing a .rviz file located in the rbx1_nav package. A .rviz file specifies which views should be shown and which data should be displayed on startup. Using -d (short for --display-config) `rospack find rbx1_nav`/... tells rviz to start with a .rviz file and which package (rbx1_nav) it should look for it in.
+
+4. Open another terminal
+
+$ connect
+
+$ roslaunch turtlebot_teleop keyboard_teleop.launch
+
+This launches the keyboard teleoperation package which allows us to control the robot's motion remotely. NOTE This terminal must have focus (be the last window clicked on) for this to work. 
+
+5. Using the keyboard teleop window drive the Turtlebot around the room
+
+Observe the map being built in rviz as you drive the turtlebot. How does the speed of the turtlebot affect the accuracy of the map? 
+
+
