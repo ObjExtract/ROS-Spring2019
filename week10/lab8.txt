@@ -1,0 +1,7 @@
+Lab 8. Localization
+
+1. Localizing in rviz
+In this part we will be observing path planning and obstacle avoidance in rviz
+
+$ connect
+$ roslaunch 
