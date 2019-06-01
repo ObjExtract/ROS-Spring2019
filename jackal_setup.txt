@@ -1,18 +1,16 @@
 Term 1:
 
-ssh -X nvidia@cpr-j100-0252.local #password is nvidia
+ssh -X  
 	gedit ~/.bashrc
 
 add the following line to the end of the file (no tabs)
-	export ROS_HOSTNAME=cpr-j100-0252.local
+	export ROS_HOSTNAME=
 
 In terminal run:
 
 	cd catkin_ws/src
 	git clone -b kinetic-devel https://github.com/jackal/jackal.git
 	git clone -b kinetic-devel https://github.com/jackal/jackal_simulator.git
-	git clone https://github.com/clearpathrobotics/LMS1xx.git
-	git clone https://github.com/ros-drivers/pointgrey_camera_driver.git
 	cd ..
 	catkin_make
 
@@ -34,24 +32,22 @@ On remote computer:
 	gedit ~/.bashrc
 
 add the following two lines to the end of the file (no tabs)
-	export ROS_HOSTNAME=rem.local #your desktop name
-        ROS_MASTER_URI=http://cpr-j100-0252.local:11311
+	export ROS_HOSTNAME=.local #your desktop name
+        ROS_MASTER_URI=http://.local:11311
 
 In terminal run:
 
 	sudo apt-get install ros-kinetic-jackal-simulator ros-kinetic-jackal-desktop
 	cd catkin_ws/src
 	git clone -b kinetic-devel https://github.com/jackal/jackal.git
-	git clone -b kinetic-devel https://github.com/jackal/jackal_simulator.git
-	git clone https://github.com/clearpathrobotics/LMS1xx.git
-	git clone https://github.com/ros-drivers/pointgrey_camera_driver.git
+
 	cd ..
 	catkin_make
 
 GMAPPING
 Term 1:
 
-	ssh nvidia@cpr-j100-0252.local #password is nvidia
+	ssh @.local
 	source ~/catkin_ws/devel/setup.bash
 	roslaunch jackal_navigation gmapping_demo.launch
 
@@ -62,7 +58,7 @@ Term 2:
 
 Term 3:
 
-	ssh nvidia@cpr-j100-0252.local #password is nvidia
+	ssh @.local 
 	cd /home/nvidia/catkin_ws/src/jackal/jackal_navigation/maps
 	source ~/catkin_ws/devel/setup.bash
 	rosrun map_server map_saver -f jackal_home #or whatever name you want to use
@@ -70,7 +66,7 @@ Term 3:
 AMCL
 Term 1:
 
-	ssh nvidia@cpr-j100-0252.local #password is nvidia
+	ssh @.local 
 	source ~/catkin_ws/devel/setup.bash
 	roslaunch jackal_navigation amcl_demo.launch map_file:=/home/nvidia/catkin_ws/src/jackal/jackal_navigation/maps/jackal_home.yaml
 
